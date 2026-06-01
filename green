@@ -1,0 +1,11 @@
+def updateColor ():
+    global red, green, blue
+    
+    red = 0      # Sem Vermelho
+    green = 255  # Máximo de Verde
+    blue = 0     # Sem Azul
+
+    fillColor("led", red, green, blue)
+    setDeviceProperty(getName(), "red", red)
+    setDeviceProperty(getName(), "green", green)
+    setDeviceProperty(getName(), "blue", blue)
