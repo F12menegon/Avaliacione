@@ -1,11 +1,16 @@
-def updateColor ():
-    global red, green, blue
-    
-    red = 0      # Sem Vermelho
-    green = 255  # Máximo de Verde
-    blue = 0     # Sem Azul
+var ledTopo = 0;   // LED Vermelho
+var ledMeio = 1;   // LED Verde
+var ledBaixo = 2;  // LED Amarelo
 
-    fillColor("led", red, green, blue)
-    setDeviceProperty(getName(), "red", red)
-    setDeviceProperty(getName(), "green", green)
-    setDeviceProperty(getName(), "blue", blue)
+function setup() {
+	pinMode(ledTopo, OUTPUT);
+	pinMode(ledMeio, OUTPUT);
+	pinMode(ledBaixo, OUTPUT);
+}
+
+function loop() {
+	digitalWrite(ledTopo, LOW);   // Desliga Vermelho
+	digitalWrite(ledMeio, HIGH);  // LIGA Verde
+	digitalWrite(ledBaixo, LOW);  // Desliga Amarelo
+	delay(100);
+}
