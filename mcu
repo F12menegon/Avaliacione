@@ -1,0 +1,31 @@
+// Defina os pinos onde o LED RGB está conectado (ajuste os números se necessário)
+var redPin = 1;
+var greenPin = 2;
+var bluePin = 3;
+
+function setup() {
+	pinMode(redPin, OUTPUT);
+	pinMode(greenPin, OUTPUT);
+	pinMode(bluePin, OUTPUT);
+	Serial.println("LED RGB Iniciado");
+}
+
+function loop() {
+	// 1. Vermelho
+	digitalWrite(redPin, HIGH);
+	digitalWrite(greenPin, LOW);
+	digitalWrite(bluePin, LOW);
+	delay(1000);
+
+	// 2. Verde
+	digitalWrite(redPin, LOW);
+	digitalWrite(greenPin, HIGH);
+	digitalWrite(bluePin, LOW);
+	delay(1000);
+
+	// 3. Amarelo (Vermelho + Verde)
+	digitalWrite(redPin, HIGH);
+	digitalWrite(greenPin, HIGH);
+	digitalWrite(bluePin, LOW);
+	delay(1000);
+}
