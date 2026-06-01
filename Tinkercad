@@ -1,31 +1,123 @@
-// Definição dos pinos do Arduino para cada LED
-const int PIN_VERMELHO = 1; 
-const int PIN_AMARELO  = 2;
-const int PIN_VERDE    = 3;
+// ======================================================================
+// 🚦 CONFIGURAÇÃO DOS PINOS
+// ======================================================================
+const int CAR_VERDE    = 4;  
+const int CAR_AMARELO  = 3;  
+const int CAR_VERMELHO = 2;  
+
+const int PED_VERDE    = 9;  
+const int PED_VERMELHO = 8;  
+
+const int BOTAO        = 7;  
+
+// ======================================================================
+// CONFIGURAÇÃO DOS TEMPOS (Em milissegundos)
+// ======================================================================
+const unsigned long TEMPO_VERDE_CARROS   = 15000; // ⏱️ AUMENTADO: 15 segundos de verde para os carros
+const unsigned long TEMPO_AMARELO_CARROS = 3000;  // 3 segundos de atenção
+const unsigned long TEMPO_VERMELHO_CICLO = 6000;  // 6 segundos de vermelho no ciclo automático
+
+// ======================================================================
+// VARIÁVEIS DE CONTROLE
+// ======================================================================
+unsigned long tempoAnterior = 0;
+int estadoSemafaro = 0;        // 0: Verde, 1: Amarelo, 2: Vermelho
+bool pedestreSolicitou = false;
 
 void setup() {
-  // Configura os pinos como saídas digitais
-  pinMode(PIN_VERMELHO, OUTPUT);
-  pinMode(PIN_AMARELO, OUTPUT);
-  pinMode(PIN_VERDE, OUTPUT);
+  pinMode(CAR_VERDE, OUTPUT);
+  pinMode(CAR_AMARELO, OUTPUT);
+  pinMode(CAR_VERMELHO, OUTPUT);
+  pinMode(PED_VERDE, OUTPUT);
+  pinMode(PED_VERMELHO, OUTPUT);
+  
+  pinMode(BOTAO, INPUT_PULLUP);
+
+  // Estado Inicial
+  digitalWrite(CAR_VERDE, HIGH);
+  digitalWrite(CAR_AMARELO, LOW);
+  digitalWrite(CAR_VERMELHO, LOW);
+  digitalWrite(PED_VERDE, LOW);
+  digitalWrite(PED_VERMELHO, HIGH);
+  
+  tempoAnterior = millis();
 }
 
 void loop() {
-  // 1. ESTADO: VERDE ACESO (Sinal Aberto)
-  digitalWrite(PIN_VERDE, HIGH);
-  digitalWrite(PIN_AMARELO, LOW);
-  digitalWrite(PIN_VERMELHO, LOW);
-  delay(5000); // Aguarda 5 segundos
+  unsigned long tempoAtual = millis();
 
-  // 2. ESTADO: AMARELO ACESO (Atenção)
-  digitalWrite(PIN_VERDE, LOW);
-  digitalWrite(PIN_AMARELO, HIGH);
-  digitalWrite(PIN_VERMELHO, LOW);
-  delay(2000); // Aguarda 2 segundos
+  // Monitora o clique do botão
+  if (digitalRead(BOTAO) == LOW) {
+    pedestreSolicitou = true;
+  }
 
-  // 3. ESTADO: VERMELHO ACESO (Sinal Fechado)
-  digitalWrite(PIN_VERDE, LOW);
-  digitalWrite(PIN_AMARELO, LOW);
-  digitalWrite(PIN_VERMELHO, HIGH);
-  delay(5000); // Aguarda 5 segundos
+  // ======================================================================
+  // MÁQUINA DE ESTADOS DO SEMÁFORO
+  // ======================================================================
+  
+  if (estadoSemafaro == 0) { // 🟢 VERDE DOS CARROS
+    // Só muda para o amarelo se os 15 segundos acabarem
+    if (tempoAtual - tempoAnterior >= TEMPO_VERDE_CARROS) {
+      estadoSemafaro = 1; 
+      tempoAnterior = tempoAtual;
+      
+      digitalWrite(CAR_VERDE, LOW);
+      digitalWrite(CAR_AMARELO, HIGH);
+    }
+  } 
+  
+  else if (estadoSemafaro == 1) { // 🟡 AMARELO DOS CARROS
+    if (tempoAtual - tempoAnterior >= TEMPO_AMARELO_CARROS) {
+      estadoSemafaro = 2; 
+      tempoAnterior = tempoAtual;
+      
+      digitalWrite(CAR_AMARELO, LOW);
+      digitalWrite(CAR_VERMELHO, HIGH);
+    }
+  } 
+  
+  else if (estadoSemafaro == 2) { // 🔴 VERMELHO DOS CARROS
+    // Se o botão foi apertado durante o ciclo, abre para o pedestre
+    if (pedestreSolicitou) {
+      executarRotinaPedestre();
+      
+      pedestreSolicitou = false; // Limpa o pedido
+      estadoSemafaro = 0;
+      tempoAnterior = millis(); // Sincroniza o tempo pós-delays
+      
+      digitalWrite(CAR_VERMELHO, LOW);
+      digitalWrite(CAR_VERDE, HIGH);
+      digitalWrite(PED_VERMELHO, HIGH); 
+    } 
+    // Se ninguém apertou, segue o fluxo automático de 6 segundos
+    else if (tempoAtual - tempoAnterior >= TEMPO_VERMELHO_CICLO) {
+      estadoSemafaro = 0;
+      tempoAnterior = tempoAtual;
+      
+      digitalWrite(CAR_VERMELHO, LOW);
+      digitalWrite(CAR_VERDE, HIGH);
+    }
+  }
+}
+
+// ======================================================================
+// ROTINA DE TRAVESSIA
+// ======================================================================
+void executarRotinaPedestre() {
+  delay(1000); // 1 segundo de segurança (tudo no vermelho)
+  
+  digitalWrite(PED_VERMELHO, LOW);
+  digitalWrite(PED_VERDE, HIGH);
+  delay(5000); // 5 segundos para atravessar
+  
+  // Pisca o vermelho do pedestre antes de fechar
+  digitalWrite(PED_VERDE, LOW);
+  for (int i = 0; i < 3; i++) {
+    digitalWrite(PED_VERMELHO, HIGH);
+    delay(400);
+    digitalWrite(PED_VERMELHO, LOW);
+    delay(400);
+  }
+  
+  delay(1000); // Janela final de esvaziamento da faixa
 }
