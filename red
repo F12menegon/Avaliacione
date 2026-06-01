@@ -1,11 +1,22 @@
-def updateColor ():
-    global red, green, blue
-    
-    red = 255    # Máximo de Vermelho
-    green = 0    # Sem Verde
-    blue = 0     # Sem Azul
+from gpio import *
+from time import *
 
-    fillColor("led", red, green, blue)
-    setDeviceProperty(getName(), "red", red)
-    setDeviceProperty(getName(), "green", green)
-    setDeviceProperty(getName(), "blue", blue)
+ledTopo = 0   # LED Vermelho
+ledMeio = 1   # LED Verde
+ledBaixo = 2  # LED Amarelo
+
+def setup():
+    pinMode(ledTopo, OUTPUT)
+    pinMode(ledMeio, OUTPUT)
+    pinMode(ledBaixo, OUTPUT)
+
+def loop():
+    digitalWrite(ledTopo, HIGH)   # LIGA Vermelho
+    digitalWrite(ledMeio, LOW)    # Desliga Verde
+    digitalWrite(ledBaixo, LOW)   # Desliga Amarelo
+    delay(100)
+
+if __name__ == "__main__":
+    setup()
+    while True:
+        loop()
