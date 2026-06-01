@@ -1,0 +1,11 @@
+def updateColor ():
+    global red, green, blue
+    # Remova ou comente as linhas de analogRead
+    red = 255    # Máximo de Vermelho
+    green = 255  # Máximo de Verde
+    blue = 0     # Sem Azul
+
+    fillColor("led", red, green, blue)
+    setDeviceProperty(getName(), "red", red)
+    setDeviceProperty(getName(), "green", green)
+    setDeviceProperty(getName(), "blue", blue)
