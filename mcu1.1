@@ -1,0 +1,31 @@
+// Defina aqui os números exatos das portas onde os cabos estão conectados
+var ledTopo = 0;   // Mude para o número da porta do LED de cima
+var ledMeio = 1;   // Mude para o número da porta do LED do meio
+var ledBaixo = 2;  // Mude para o número da porta do LED de baixo
+
+function setup() {
+	pinMode(ledTopo, OUTPUT);
+	pinMode(ledMeio, OUTPUT);
+	pinMode(ledBaixo, OUTPUT);
+	Serial.println("Sistema de LEDs Iniciado");
+}
+
+function loop() {
+	// Liga o LED de cima e desliga os outros
+	digitalWrite(ledTopo, HIGH);
+	digitalWrite(ledMeio, LOW);
+	digitalWrite(ledBaixo, LOW);
+	delay(1000); // Espera 1 segundo
+
+	// Liga o LED do meio e desliga os outros
+	digitalWrite(ledTopo, LOW);
+	digitalWrite(ledMeio, HIGH);
+	digitalWrite(ledBaixo, LOW);
+	delay(1000);
+
+	// Liga o LED de baixo e desliga os outros
+	digitalWrite(ledTopo, LOW);
+	digitalWrite(ledMeio, LOW);
+	digitalWrite(ledBaixo, HIGH);
+	delay(1000);
+}
