@@ -1,0 +1,31 @@
+// Definição dos pinos do Arduino para cada LED
+const int PIN_VERMELHO = 1; 
+const int PIN_AMARELO  = 2;
+const int PIN_VERDE    = 3;
+
+void setup() {
+  // Configura os pinos como saídas digitais
+  pinMode(PIN_VERMELHO, OUTPUT);
+  pinMode(PIN_AMARELO, OUTPUT);
+  pinMode(PIN_VERDE, OUTPUT);
+}
+
+void loop() {
+  // 1. ESTADO: VERDE ACESO (Sinal Aberto)
+  digitalWrite(PIN_VERDE, HIGH);
+  digitalWrite(PIN_AMARELO, LOW);
+  digitalWrite(PIN_VERMELHO, LOW);
+  delay(5000); // Aguarda 5 segundos
+
+  // 2. ESTADO: AMARELO ACESO (Atenção)
+  digitalWrite(PIN_VERDE, LOW);
+  digitalWrite(PIN_AMARELO, HIGH);
+  digitalWrite(PIN_VERMELHO, LOW);
+  delay(2000); // Aguarda 2 segundos
+
+  // 3. ESTADO: VERMELHO ACESO (Sinal Fechado)
+  digitalWrite(PIN_VERDE, LOW);
+  digitalWrite(PIN_AMARELO, LOW);
+  digitalWrite(PIN_VERMELHO, HIGH);
+  delay(5000); // Aguarda 5 segundos
+}
