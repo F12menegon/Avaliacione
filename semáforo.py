@@ -325,6 +325,8 @@ def main():
         print("\nPrograma finalizado pelo usuário.")
 
 
+
+
 # Esta linha abaixo é padrão do Python. Ela significa: "Se este arquivo estiver sendo
 # executado diretamente pelo usuário, comece chamando a função main() ali de cima".
 if __name__ == "__main__":
